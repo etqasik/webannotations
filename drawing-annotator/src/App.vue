@@ -1,30 +1,24 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { computed } from 'vue'
+import { useSettingsStore } from '@/stores/settingsStore'
+import WelcomeView from '@/views/WelcomeView.vue'
+import AnnotatorView from '@/views/AnnotatorView.vue'
+
+const settingsStore = useSettingsStore()
+
+// Определение текущей темы для body
+const themeClass = computed(() => {
+  return settingsStore.darkMode ? 'dark' : ''
+})
+
+// Применение темы к body
+document.body.className = settingsStore.darkMode ? 'dark bg-gray-900' : 'bg-white'
 </script>
 
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div :class="themeClass" class="min-h-screen w-full transition-colors duration-200">
+    <!-- Используем WelcomeView если это первый запуск, иначе AnnotatorView -->
+    <WelcomeView v-if="settingsStore.showWelcomeScreen" />
+    <AnnotatorView v-else />
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
